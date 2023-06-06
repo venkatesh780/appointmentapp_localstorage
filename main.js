@@ -50,8 +50,50 @@ function renderItemsToPage() {
     const appointment = document.createElement("li");
     appointment.innerText = `${item.name} ${item.email} ${item.phone} ${item.date}`;
 
+    const editBtn = document.createElement("button");
+    editBtn.innerText = "Edit";
+    editBtn.classList.add("btn");
+    editBtn.style.color = "orange";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "Delete";
+    deleteBtn.classList.add("btn");
+    deleteBtn.style.color = "red";
+
+    appointment.appendChild(editBtn);
+    appointment.appendChild(deleteBtn);
     appointmentList.appendChild(appointment);
   });
 }
+
+function deleteItem(itemIndex) {
+  let appointments = getItems();
+  appointments.splice(itemIndex, 1);
+
+  localStorage.setItem("appointments", JSON.stringify(appointments));
+
+  renderItemsToPage();
+}
+function handleEditDelete(e) {
+  if (e.target.innerText === "Delete") {
+    let items = e.target.parentElement.innerText.split(" ");
+    let appointemetns = getItems();
+
+    let itemIndex;
+    appointemetns.forEach((item, index) => {
+      if (
+        items[0] === item.name &&
+        items[1] === item.email &&
+        items[2] === item.phone
+      ) {
+        itemIndex = index;
+      }
+    });
+    deleteItem(itemIndex);
+  } else if (e.target.innerText === "Edit") {
+    console.log("ready to edit");
+  }
+}
 submitBtn.addEventListener("click", haddleForm);
+appointmentList.addEventListener("click", handleEditDelete);
 renderItemsToPage();

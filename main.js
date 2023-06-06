@@ -74,6 +74,19 @@ function deleteItem(itemIndex) {
 
   renderItemsToPage();
 }
+
+function updateItems(data, itemIndex) {
+  let appointments = getItems();
+
+  appointments[itemIndex] = data;
+
+  localStorage.setItem("appointments", JSON.stringify(appointments));
+
+  renderItemsToPage();
+
+  submitBtn.style.display = "block";
+  updateBtn.style.display = "none";
+}
 function handleEditDelete(e) {
   if (e.target.innerText === "Delete") {
     let items = e.target.parentElement.innerText.split(" ");
@@ -91,7 +104,47 @@ function handleEditDelete(e) {
     });
     deleteItem(itemIndex);
   } else if (e.target.innerText === "Edit") {
-    console.log("ready to edit");
+    let items = e.target.parentElement.innerText.split(" ");
+    let appointemetns = getItems();
+
+    let itemIndex;
+    appointemetns.forEach((item, index) => {
+      if (
+        items[0] === item.name &&
+        items[1] === item.email &&
+        items[2] === item.phone
+      ) {
+        itemIndex = index;
+      }
+    });
+    document.getElementById("name").value = items[0];
+    document.getElementById("email").value = items[1];
+    document.getElementById("phone").value = items[2];
+
+    submitBtn.style.display = "none";
+    updateBtn.style.display = "block";
+
+    updateBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const date = document.getElementById("date").value;
+
+      let data = {
+        name,
+        email,
+        phone,
+        date,
+      };
+
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("phone").value = "";
+      document.getElementById("date").value = "";
+      updateItems(data, itemIndex);
+    });
   }
 }
 submitBtn.addEventListener("click", haddleForm);
